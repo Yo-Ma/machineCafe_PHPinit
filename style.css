@@ -1,0 +1,27 @@
+
+.container-fluid {
+	background-color: rgba(232,232,232,0.5);
+
+}
+
+.horloge {
+	text-align: left;
+}
+
+.titre, .compteur{
+	text-align: center;
+}
+
+.listeBoisson {
+	text-align: center;
+}
+
+.radioSelect {
+	display: inline-block;
+	padding: 5px;
+	font-size: 1.5em;
+}
+
+#menu {
+	text-align: center;
+}
