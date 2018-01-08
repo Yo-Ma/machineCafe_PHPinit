@@ -68,6 +68,7 @@ $drinkName = array();
 $youRecipe = array();
 $coinInserted = 0;
 $sugarNb = null;
+$drinkSelected = NULL;
 
 
 ?>

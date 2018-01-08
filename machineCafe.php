@@ -4,7 +4,13 @@ setlocale(LC_TIME, 'fr_FR');
 include('variables.php');
 include('fonctions.php');
 
-$bdd = new PDO('mysql:host=localhost;dbname=coffee_machine;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+try {
+    $bdd = new PDO('mysql:host=localhost;dbname=coffee_machine;charset=utf8', 'cm', 'cm!', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+}
+catch(Exception $e) {
+    die('Erreur : '.$e->getMessage());
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -46,33 +52,55 @@ $bdd = new PDO('mysql:host=localhost;dbname=coffee_machine;charset=utf8', 'root'
                 <h2 class="listeBoisson">
 
                     <?php
-                    drinkSelection();
+                    $reponse = $bdd->query('SELECT drinks.name FROM drinks');
+                    while ($donnees = $reponse->fetch()) {
+                        echo $donnees['name']. ' ';
+                    }    
+
+                    $reponse->closeCursor();
+
                     ?>
                 </h2>
                 
                 <hr />
                 <div id="menu">
-                <?php include("forms.php") ?>
+                    <?php include("forms.php") ?>
                 </div>
             </div>
             <hr />
             <div>
                 <?= boissonSelected(); ?>
-            </div>
-            <div class="recup">
-                
-            </div>
-            <hr />
-            <div class="compteur">
-                <h3>
-                    <span>Montant inséré :</span>
-                    <br />
-                    <span><?= $coinInserted ?> €uros</span>              
-                </h3>
+                <br />
+
+                <?php
+                /*$reponse = $bdd->query('SELECT drinks.name FROM drinks WHERE drinks.name ="chocolat"');
+                    while ($donnees = $reponse->fetch()) {
+                        echo $donnees['name']. ' ';
+                    }  */
+                $making = $bdd->prepare('SELECT drinks.name FROM drinks WHERE drinks.name = ?');
+                $making->execute(array($_POST["drink"]));
+
+                while ($ma = $making->fetch()) {
+                    echo $ma['name'];
+                }
+
+                $making->closeCursor();
+                ?>
+                </div>
+                <div class="recup">
+
+                </div>
+                <hr />
+                <div class="compteur">
+                    <h3>
+                        <span>Montant inséré :</span>
+                        <br />
+                        <span><?= $coinInserted ?> €uros</span>              
+                    </h3>
+                </div>
             </div>
         </div>
-    </div>
 
-</body>
-</html>
+    </body>
+    </html>
 
