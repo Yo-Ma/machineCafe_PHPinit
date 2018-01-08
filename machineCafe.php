@@ -69,7 +69,7 @@ catch(Exception $e) {
             </div>
             <hr />
             <div>
-                <?= boissonSelected(); ?>
+                
                 <br />
 
                 <?php
@@ -77,8 +77,10 @@ catch(Exception $e) {
                     while ($donnees = $reponse->fetch()) {
                         echo $donnees['name']. ' ';
                     }  */
-                $making = $bdd->prepare('SELECT drinks.name FROM drinks WHERE drinks.name = ?');
-                $making->execute(array($_POST["drink"]));
+                    var_dump($_POST["drink"]);
+                    var_dump($_POST["sugarNb"]);
+                $making = $bdd->prepare('SELECT drinks.name, sales.sugar FROM drinks, sales WHERE drinks.name = :drinkSelected AND sales.sugar = :sugarNb');
+                $making->execute(array('drinkSelected' => $_POST["drink"], 'sugarNb' => $_POST["sugarNb"]));
 
                 while ($ma = $making->fetch()) {
                     echo $ma['name'];
