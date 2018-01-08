@@ -4,6 +4,7 @@ setlocale(LC_TIME, 'fr_FR');
 include('variables.php');
 include('fonctions.php');
 
+$bdd = new PDO('mysql:host=localhost;dbname=coffee_machine;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 ?>
 
 <!DOCTYPE html>
