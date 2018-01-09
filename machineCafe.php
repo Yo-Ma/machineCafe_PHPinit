@@ -1,15 +1,8 @@
 <?php
 setlocale(LC_TIME, 'fr_FR');
 
-include('variables.php');
 include('fonctions.php');
 
-try {
-    $bdd = new PDO('mysql:host=localhost;dbname=coffee_machine;charset=utf8', 'cm', 'cm!', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-}
-catch(Exception $e) {
-    die('Erreur : '.$e->getMessage());
-}
 
 ?>
 
@@ -52,13 +45,7 @@ catch(Exception $e) {
                 <h2 class="listeBoisson">
 
                     <?php
-                    $reponse = $bdd->query('SELECT drinks.name FROM drinks');
-                    while ($donnees = $reponse->fetch()) {
-                        echo $donnees['name']. ' ';
-                    }    
-
-                    $reponse->closeCursor();
-
+                    drinksListed($bdd);
                     ?>
                 </h2>
                 
@@ -69,40 +56,29 @@ catch(Exception $e) {
             </div>
             <hr />
             <div>
-                
+
                 <br />
 
                 <?php
-                /*$reponse = $bdd->query('SELECT drinks.name FROM drinks WHERE drinks.name ="chocolat"');
-                    while ($donnees = $reponse->fetch()) {
-                        echo $donnees['name']. ' ';
-                    }  */
-                    var_dump($_POST["drink"]);
-                    var_dump($_POST["sugarNb"]);
-                $making = $bdd->prepare('SELECT drinks.name, sales.sugar FROM drinks, sales WHERE drinks.name = :drinkSelected AND sales.sugar = :sugarNb');
-                $making->execute(array('drinkSelected' => $_POST["drink"], 'sugarNb' => $_POST["sugarNb"]));
+                    showRecipe($bdd);
 
-                while ($ma = $making->fetch()) {
-                    echo $ma['name'];
-                }
-
-                $making->closeCursor();
                 ?>
-                </div>
-                <div class="recup">
 
-                </div>
-                <hr />
-                <div class="compteur">
-                    <h3>
-                        <span>Montant inséré :</span>
-                        <br />
-                        <span><?= $coinInserted ?> €uros</span>              
-                    </h3>
-                </div>
+            </div>
+            <div class="recup">
+
+            </div>
+            <hr />
+            <div class="compteur">
+                <h3>
+                    <span>Montant inséré :</span>
+                    <br />
+                    <span><?= $coinInserted ?> €uros</span>              
+                </h3>
             </div>
         </div>
+    </div>
 
-    </body>
-    </html>
+</body>
+</html>
 

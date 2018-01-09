@@ -1,5 +1,6 @@
 <?php
 
+
 $drinkList = [
     "coffee" => [ 
         'name'   => 'Café',
@@ -64,11 +65,12 @@ $coinType = [200, 100, 50, 20, 10, 5];
 $coinStock = [50, 50, 50, 50, 50, 50];
 
 $hour = date("H:i");
-$drinkName = array();
-$youRecipe = array();
+
 $coinInserted = 0;
 $sugarNb = null;
 $drinkSelected = NULL;
+$increment = 0;
+$bdd = connectionDb('coffee_machine', 'cm', 'cm!');
 
 
 ?>

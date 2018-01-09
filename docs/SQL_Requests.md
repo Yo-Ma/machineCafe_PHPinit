@@ -48,21 +48,29 @@ WHERE drinks_code='exp';
 
 ## Liste des boissons disponibles (pour lesquelles les ingrédients sont dispo)
 ````
-SELECT DISTINCT drinks.code
-FROM drinks, recipes, ingredients
-WHERE ingredients.quantity != 0
-	AND recipes.ingredients_id = ingredients.id
-    AND recipes.recipeqty < ingredients.quantity
-    AND drinks.code = recipes.drinks_code
+SELECT drinks.name FROM drinks
+WHERE drinks.name NOT IN (
+    SELECT drinks.name FROM drinks
+	INNER JOIN recipes ON drinks.code = recipes.drinks_code
+	INNER JOIN ingredients ON recipes.ingredients_id = ingredients.id
+	WHERE recipes.recipeqty > ingredients.ingredients_stock) 
+
+
+															***	***	***	***	***	***	***	***	***	***	***
+																			ALTERNATIVE						
+SELECT drinks.name																						
+FROM drinks, recipes, ingredients 																			SELECT drinks.name FROM drinks 
+WHERE drinks.code = recipes.drinks_code 																	INNER JOIN recipes ON drinks.code = recipes.drinks_code
+AND recipes.ingredients_id = ingredients.id 																INNER JOIN ingredients ON recipes.ingredients_id = ingredients.id
+GROUP BY drinks.name 																						GROUP BY drinks.name
+HAVING MIN(recipes.recipeqty <= ingredients.ingredients_stock)!= 0											HAVING MIN(recipes.recipeqty <= ingredients.ingredients_stock)!= 0								
 
 ````
 
 ## Liste des boissons vendues aujourd’hui
 ````
-SELECT name 
-FROM `drinks`
-INNER JOIN `sales`
-ON drinks.code = sales.drinks_code
+SELECT name FROM `drinks`
+INNER JOIN sales ON drinks.code = sales.drinks_code
 WHERE drinks.code IN (
     SELECT drinks_code
     FROM sales
@@ -71,10 +79,8 @@ WHERE drinks.code IN (
 
 ## Prix de la derniere boisson vendue
 ````
-SELECT price
-FROM drinks
-INNER JOIN sales
-ON drinks.code = sales.drinks_code
+SELECT price FROM drinks
+INNER JOIN sales ON drinks.code = sales.drinks_code
 WHERE drinks.code IN (
     SELECT drinks_code
     FROM sales
@@ -82,9 +88,9 @@ WHERE drinks.code IN (
 ORDER BY price DESC LIMIT 1;										// Limite l'affichage au dernier row
 
 
-							***	***	***	***	***	***	***	***	***	***	***
-
-SELECT name, price, date											// Alternative
+															***	***	***	***	***	***	***	***	***	***	***
+																			ALTERNATIVE
+SELECT name, price, date											
 FROM drinks
 INNER JOIN sales
 ON drinks.code = sales.drinks_code
@@ -94,17 +100,17 @@ WHERE date=(
 ````
 
 ## Nombre de ventes de la boisson « CaféLong » ("Double Expresso" en l'occurence)
-````
+````																	Pour une date définie
 SELECT COUNT(drinks_code)
 FROM sales
-WHERE sales.drinks_code='dbl' AND DATE(date)='2018-01-05'; 			// Pour une date définie
+WHERE sales.drinks_code='dbl' AND DATE(date)='2018-01-05'; 			
 
 
-							***	***	***	***	***	***	***	***	***	***	***
-
+															***	***	***	***	***	***	***	***	***	***	***
+																		Pour la date du jour
 SELECT COUNT(drinks_code)
 FROM sales
-WHERE sales.drinks_code='dbl' AND DATE(date)=CURRENT_DATE 			// Pour la date du jour
+WHERE sales.drinks_code='dbl' AND DATE(date)=CURRENT_DATE 			 
 ````
 
 ## Rajouter la boisson « Café au lait »

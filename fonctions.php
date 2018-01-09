@@ -1,12 +1,26 @@
 <?php
+session_start();
+
+include('variables.php');
+
+function connectionDb($dbName, $userName, $pwd) { 
+    try {
+        $db = new PDO('mysql:host=localhost;dbname='.$dbName.';charset=utf8', $userName, $pwd, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    }
+    catch(Exception $e) {
+        die('Erreur : '.$e->getMessage());
+    }
+    return $db;
+}
+
 
 function drinkSelection() {
     global $drinkList;
-
     foreach ($drinkList as $element => $value) {
         echo $value['name'].' ';
     } 
 }
+
 
 function makeDrink($boisson, $sugarNb) {
     global $drinkRecipes;
@@ -28,7 +42,84 @@ function makeDrink($boisson, $sugarNb) {
 }
 
 
+function drinksListed($data) {
+    
+    $reponse = $data->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
+    while ($donnees = $reponse->fetch()) {
+        echo $donnees['name'] . ' ';
+    }    
+    $reponse->closeCursor();
+}
 
 
+function drinkschoices($data) {
+    global $increment;
 
+    $increment = 0;
+    $reponse = $data->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
+
+    while ($donnees = $reponse->fetch()) {
+        switch ($increment) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            echo ' <p class="radioSelect"><label><input type="radio" name="drink" value="' . $donnees["name"] .  '"/> '  . $donnees["name"] . '</label></p>';
+            $increment ++;
+            break;
+            case 4:
+            echo ' <br /><p class="radioSelect"><label><input type="radio" name="drink" value="' . $donnees["name"] .  '"/> '  . $donnees["name"] . '</label></p>';
+            $increment ++;
+            break;
+            case 5:
+            case 6:
+            case 7:
+            echo ' <p class="radioSelect"><label><input type="radio" name="drink" value="' . $donnees["name"] .  '"/> '  . $donnees["name"] . '</label></p>';
+            $increment ++;
+            break;
+            case 8:
+            echo ' <br /><p class="radioSelect"><label><input type="radio" name="drink" value="' . $donnees["name"] .  '"/> '  . $donnees["name"] . '</label></p>';
+            $increment ++;
+            case 9:
+            case 10:
+            case 11:
+            break;        
+        }
+    }    
+    $reponse->closeCursor();  
+}
+
+
+function showRecipe($data) {
+       
+    $i = 0;
+
+    if (isset($_POST["drink"])) 
+    {
+
+       $ingredientsList = $data -> prepare("
+            SELECT recipes.recipeqty AS 'qty', ingredients.name AS 'ing', drinks.name AS 'name'
+            FROM `recipes` 
+            INNER JOIN drinks ON drinks.code = recipes.drinks_code 
+            INNER JOIN ingredients ON ingredients.id = recipes.ingredients_id
+            WHERE drinks.name = :drinkSelected 
+            ");
+
+        $ingredientsList -> execute(array('drinkSelected' => $_POST["drink"]));
+        
+        while ($makeRecipe = $ingredientsList -> fetch()) {
+        
+            if ($i == 0) { 
+                $i = 1;
+                    echo "Recette pour un <b>" . $makeRecipe["name"] . "</b><br>";
+                }            
+                echo $makeRecipe["ing"] . " : " . $makeRecipe["qty"] . "<br>"   ;
+            }    
+    } else {
+            echo 'En attente...';
+    }
+    $ingredientsList -> closeCursor();
+}
+ 
 ?>
+
