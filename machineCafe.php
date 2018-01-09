@@ -45,7 +45,7 @@ include('fonctions.php');
                 <h2 class="listeBoisson">
 
                     <?php
-                    drinksListed($bdd);
+                    drinksListed();
                     ?>
                 </h2>
                 
@@ -60,7 +60,7 @@ include('fonctions.php');
                 <br />
 
                 <?php
-                    showRecipe($bdd);
+                    showRecipe();
 
                 ?>
 

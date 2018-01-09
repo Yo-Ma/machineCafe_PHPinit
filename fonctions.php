@@ -5,7 +5,7 @@ include('variables.php');
 
 function connectionDb($dbName, $userName, $pwd) { 
     try {
-        $db = new PDO('mysql:host=localhost;dbname='.$dbName.';charset=utf8', $userName, $pwd, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=localhost;dbname='. $dbName .';charset=utf8', $userName, $pwd, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     catch(Exception $e) {
         die('Erreur : '.$e->getMessage());
@@ -16,6 +16,7 @@ function connectionDb($dbName, $userName, $pwd) {
 
 function drinkSelection() {
     global $drinkList;
+
     foreach ($drinkList as $element => $value) {
         echo $value['name'].' ';
     } 
@@ -24,6 +25,7 @@ function drinkSelection() {
 
 function makeDrink($boisson, $sugarNb) {
     global $drinkRecipes;
+
     echo '<u>La recette du '. $boisson . '</u><br />';
     foreach ($drinkRecipes as $key => $value) {
         if ($key == $boisson) {
@@ -42,9 +44,9 @@ function makeDrink($boisson, $sugarNb) {
 }
 
 
-function drinksListed($data) {
-    
-    $reponse = $data->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
+function drinksListed() {
+    global $bdd;
+    $reponse = $bdd->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
     while ($donnees = $reponse->fetch()) {
         echo $donnees['name'] . ' ';
     }    
@@ -52,11 +54,11 @@ function drinksListed($data) {
 }
 
 
-function drinkschoices($data) {
-    global $increment;
+function drinkschoices() {
+    global $bdd, $increment;
 
     $increment = 0;
-    $reponse = $data->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
+    $reponse = $bdd->query('SELECT drinks.name FROM drinks ORDER BY drinks.name ASC');
 
     while ($donnees = $reponse->fetch()) {
         switch ($increment) {
@@ -90,15 +92,14 @@ function drinkschoices($data) {
 }
 
 
-function showRecipe($data) {
-       
+function showRecipe() {
+    global $bdd;
     $i = 0;
 
-    if (isset($_POST["drink"])) 
-    {
+    if (isset($_POST["drink"])) {
 
-       $ingredientsList = $data -> prepare("
-            SELECT recipes.recipeqty AS 'qty', ingredients.name AS 'ing', drinks.name AS 'name'
+        $ingredientsList = $bdd -> prepare("
+            SELECT recipes.recipeqty AS 'qty', ingredients.name AS 'ing', drinks.name AS 'name', drinks.price AS 'price'
             FROM `recipes` 
             INNER JOIN drinks ON drinks.code = recipes.drinks_code 
             INNER JOIN ingredients ON ingredients.id = recipes.ingredients_id
@@ -111,13 +112,16 @@ function showRecipe($data) {
         
             if ($i == 0) { 
                 $i = 1;
-                    echo "Recette pour un <b>" . $makeRecipe["name"] . "</b><br>";
-                }            
-                echo $makeRecipe["ing"] . " : " . $makeRecipe["qty"] . "<br>"   ;
-            }    
+                echo "<b>" . $makeRecipe["name"] . "</b><br>";
+                echo '<b> ' . ($makeRecipe['price'] / 100) . ' €uros</b><br><br>';
+            }            
+            echo $makeRecipe["ing"] . " : " . $makeRecipe["qty"] . "<br>"   ;
+        }
+
     } else {
-            echo 'En attente...';
+        echo 'En attente...';
     }
+
     $ingredientsList -> closeCursor();
 }
  
