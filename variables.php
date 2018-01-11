@@ -1,5 +1,7 @@
 <?php
 
+include('config-ini.php');
+
 
 $drinkList = [
     "coffee" => [ 
@@ -70,7 +72,7 @@ $coinInserted = 0;
 $sugarNb = null;
 $drinkSelected = NULL;
 $increment = 0;
-$bdd = connectionDb('coffee_machine', 'cm', 'cm!');
+$bdd = connectionDb($dbName, $userName, $pwd);
 
 
 ?>
