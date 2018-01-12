@@ -1,6 +1,6 @@
 <?php
 
-include('config-ini.php');
+require_once('config-inc.php');
 
 
 $drinkList = [
@@ -72,6 +72,7 @@ $coinInserted = 0;
 $sugarNb = null;
 $drinkSelected = NULL;
 $increment = 0;
+
 $bdd = connectionDb($dbName, $userName, $pwd);
 
 

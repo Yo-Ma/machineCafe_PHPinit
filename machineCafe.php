@@ -60,6 +60,7 @@ include('fonctions.php');
                 <br />
 
                 <?php
+                
                     showRecipe();
 
                 ?>
